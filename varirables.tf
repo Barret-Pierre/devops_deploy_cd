@@ -13,7 +13,6 @@ variable "region" {
 variable "key_name" {
   description = "Value of the key_name"
   type        = string
-  default = "tp_devops"
 }
 
 variable "private_key" {
@@ -24,6 +23,5 @@ variable "private_key" {
 variable "vpc_security_group_id" {
   description = "Value of the secutiry group id"
   type        = string
-  default = "sg-0b382662fbf5c3b45"
 }
 
