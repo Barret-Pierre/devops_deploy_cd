@@ -20,7 +20,7 @@ data "aws_instances" "app_server_instance" {
 }
 
 resource "aws_instance" "app_server" {
-  count         = length(data.aws_instances.mongodb_instances.ids) > 0 ? 0 : 1
+  count         = length(data.aws_instances.app_server_instance.ids) > 0 ? 0 : 1
   ami           = var.ami
   instance_type = "t2.micro"
   key_name      = var.key_name
