@@ -23,16 +23,16 @@ resource "aws_instance" "app_server" {
   count         = length(data.aws_instances.existing_app_server.ids) > 0 ? 0 : 1
   ami           = var.ami
   instance_type = "t2.micro"
-  key_name      = var.key_name
+  key_name      = "tp_devops"
   tags = {
     Name = "aws_docker_nginx"
   }
-  vpc_security_group_ids = [ var.vpc_security_group_id ]
+  vpc_security_group_ids = [ "sg-0b382662fbf5c3b45" ]
 
   connection {
     type        = "ssh"
     user        = "ec2-user"  # Faire attention, change en fonction des AIM
-    private_key = var.private_key 
+    private_key = file("./tp_devops.pem")
     host        = self.public_ip
   }
 
@@ -56,8 +56,8 @@ resource "null_resource" "deploy_nginx" {
   connection {
     type        = "ssh"
     user        = "ec2-user"  
-    private_key = var.private_key
-    host        = aws_instance.app_server.public_ip
+    private_key = file("./tp_devops.pem")
+    host        = aws_instance.app_server[0].public_ip
   }
 
   provisioner "file" {
@@ -74,13 +74,12 @@ resource "null_resource" "deploy_nginx" {
 
 resource "null_resource" "update_nginx" {
   count         = length(data.aws_instances.existing_app_server.ids) > 0 ? 1 : 0
-  depends_on = [data.aws_instance.existing_app_server]
 
   connection {
     type        = "ssh"
     user        = "ec2-user"  
-    private_key = var.private_key
-    host        = data.aws_instances.existing_app_server.public_ip
+    private_key = file("./tp_devops.pem")
+    host        = data.aws_instances.existing_app_server.public_ips[0]
   }
 
   provisioner "file" {
