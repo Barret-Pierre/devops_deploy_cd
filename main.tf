@@ -13,19 +13,19 @@ provider "aws" {
   region = var.region
 }
 
-data "aws_instances" "app_server" {
+data "aws_instances" "existing_app_server" {
   instance_tags = {
     Name = "aws_docker_nginx"
   }
 }
 
 resource "aws_instance" "app_server" {
-  count         = length(data.aws_instances.app_server.ids) > 0 ? 0 : 1
+  count         = length(data.aws_instances.existing_app_server.ids) > 0 ? 0 : 1
   ami           = var.ami
   instance_type = "t2.micro"
   key_name      = var.key_name
   tags = {
-    Name = "aws_docker_nginx_cd"
+    Name = "aws_docker_nginx"
   }
   vpc_security_group_ids = [ var.vpc_security_group_id ]
 
@@ -50,7 +50,7 @@ resource "aws_instance" "app_server" {
 }
 
 resource "null_resource" "deploy_nginx" {
-  count         = length(data.aws_instances.app_server.ids) > 0 ? 0 : 1
+  count         = length(data.aws_instances.existing_app_server.ids) > 0 ? 0 : 1
   depends_on = [aws_instance.app_server]
 
   connection {
@@ -73,14 +73,14 @@ resource "null_resource" "deploy_nginx" {
 }
 
 resource "null_resource" "update_nginx" {
-  count         = length(data.aws_instances.app_server.ids) > 0 ? 1 : 0
-  depends_on = [data.aws_instance.app_server]
+  count         = length(data.aws_instances.existing_app_server.ids) > 0 ? 1 : 0
+  depends_on = [data.aws_instance.existing_app_server]
 
   connection {
     type        = "ssh"
     user        = "ec2-user"  
     private_key = var.private_key
-    host        = data.aws_instance.app_server.ids[0].public_ip
+    host        = data.aws_instances.existing_app_server.public_ip
   }
 
   provisioner "file" {
