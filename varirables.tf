@@ -10,3 +10,18 @@ variable "region" {
   default = "eu-west-3"
 }
 
+variable "vpc_security_group_id" {
+  description = "Value of the AWS secutiry group id"
+  type        = string
+}
+
+variable "key_name" {
+  description = "Value of the AWS key name"
+  type        = string
+}
+
+variable "private_key" {
+  description = "Value of the AWS private key"
+  type        = string
+}
+
