@@ -79,7 +79,7 @@ resource "null_resource" "update_nginx" {
     type        = "ssh"
     user        = "ec2-user"  
     private_key = var.private_key
-    host        = data.aws_instance.app_server_instance.pu
+    host        = data.aws_instance.app_server_instance.public_ip
   }
 
   provisioner "file" {
