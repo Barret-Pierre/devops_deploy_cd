@@ -1,0 +1,35 @@
+name: CD with Terraform
+on:
+  push:
+    branches:
+      - main
+
+env:
+  AWS_ACCESS_KEY_ID: ${{secret.AWS_ACCESS_KEY_ID}}
+  AWS_SECRET_ACCESS_KEY: ${{secret.AWS_SECRET_ACCESS_KEY}}
+  AWS_SSH_KEY_NAME: ${{secret.AWS_SSH_KEY_NAME}}
+  AWS_SSH_KEY_PRIVATE: ${{secret.AWS_SSH_KEY_PRIVATE}}
+  AWS_VPC_SECURITY_GROUP_ID: ${{secret.AWS_VPC_SECURITY_GROUP_ID}}
+
+jobs:
+  deploy-infra:
+    run-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup terraform
+        uses: hashicorp/setup-terraform@v3
+      - name: Terraform Init
+        id: init
+        run: terraform init
+      - name: Terraform Plan
+        id: plan
+        run: |-
+          terraform plan \
+          -var="key_name=$AWS_SSH_KEY_NAME" \
+          -var="private_key=$AWS_SSH_KEY_PRIVATE" \
+          -var="vpc_security_group_id=$AWS_VPC_SECURITY_GROUP_ID" \
+          -out=PLAN
+      - name: Terraform Apply
+        id: apply
+        run: terraform apply PLAN
