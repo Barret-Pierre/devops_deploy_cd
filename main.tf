@@ -25,7 +25,7 @@ resource "aws_instance" "app_server" {
   instance_type = "t2.micro"
   key_name      = var.key_name
   tags = {
-    Name = "aws_docker_nginx"
+    Name = "aws_docker_nginx_cd"
   }
   vpc_security_group_ids = [ var.vpc_security_group_id ]
 
