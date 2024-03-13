@@ -5,15 +5,15 @@ on:
       - main
 
 env:
-  AWS_ACCESS_KEY_ID: ${{secret.AWS_ACCESS_KEY_ID}}
-  AWS_SECRET_ACCESS_KEY: ${{secret.AWS_SECRET_ACCESS_KEY}}
-  AWS_SSH_KEY_NAME: ${{secret.AWS_SSH_KEY_NAME}}
-  AWS_SSH_KEY_PRIVATE: ${{secret.AWS_SSH_KEY_PRIVATE}}
-  AWS_VPC_SECURITY_GROUP_ID: ${{secret.AWS_VPC_SECURITY_GROUP_ID}}
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_SSH_KEY_NAME: ${{ secrets.AWS_SSH_KEY_NAME }}
+  AWS_SSH_KEY_PRIVATE: ${{ secrets.AWS_SSH_KEY_PRIVATE }}
+  AWS_VPC_SECURITY_GROUP_ID: ${{ secrets.AWS_VPC_SECURITY_GROUP_ID }}
 
 jobs:
   deploy-infra:
-    run-on: ubuntu-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
