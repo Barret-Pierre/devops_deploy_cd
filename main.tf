@@ -73,6 +73,7 @@ resource "null_resource" "deploy_nginx" {
 }
 
 resource "null_resource" "update_nginx" {
+  count         = length(data.aws_instances.app_server_instance.ids) > 0 ? 1 : 0
   depends_on = [data.aws_instance.app_server_instance.ids[0]]
 
   connection {
