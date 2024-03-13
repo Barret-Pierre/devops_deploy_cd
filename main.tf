@@ -73,13 +73,13 @@ resource "null_resource" "deploy_nginx" {
 }
 
 resource "null_resource" "update_nginx" {
-  depends_on = [data.aws_instance.app_server_instance]
+  depends_on = [data.aws_instance.app_server_instance.ids[0]]
 
   connection {
     type        = "ssh"
     user        = "ec2-user"  
     private_key = var.private_key
-    host        = data.aws_instance.app_server_instance.public_ip
+    host        = data.aws_instance.app_server_instance.ids[0].public_ip
   }
 
   provisioner "file" {
@@ -94,7 +94,7 @@ resource "null_resource" "update_nginx" {
 
   provisioner "remote-exec" {
     inline = [
-      "sudo docker-compose stop",
+      "sudo docker-compose -f /home/ec2-user/docker-compose.yml stop",
       "sudo docker-compose -f /home/ec2-user/docker-compose.yml up --build -d"
     ]
   }
