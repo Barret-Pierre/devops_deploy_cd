@@ -32,7 +32,7 @@ resource "aws_instance" "app_server" {
   connection {
     type        = "ssh"
     user        = "ec2-user"  # Faire attention, change en fonction des AIM
-    private_key = file("./tp_devops.pem")
+    private_key = var.private_key
     host        = self.public_ip
   }
 
@@ -56,7 +56,7 @@ resource "null_resource" "deploy_nginx" {
   connection {
     type        = "ssh"
     user        = "ec2-user"  
-    private_key = file("./tp_devops.pem")
+    private_key = var.private_key
     host        = aws_instance.app_server[0].public_ip
   }
 
@@ -78,7 +78,7 @@ resource "null_resource" "update_nginx" {
   connection {
     type        = "ssh"
     user        = "ec2-user"  
-    private_key = file("./tp_devops.pem")
+    private_key = var.private_key
     host        = data.aws_instances.existing_app_server.public_ips[0]
   }
 
